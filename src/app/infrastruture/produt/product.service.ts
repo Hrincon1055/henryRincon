@@ -14,9 +14,11 @@ export class ProdutService extends ProdutGateway {
   constructor(private _http: HttpClient) {
     super();
   }
+
   public getProduts(): Observable<IResponse<IProduct[]>> {
     return this._http.get<IResponse<IProduct[]>>(`${this.url}/products`);
   }
+
   public saveProdut(payload: IProduct): Observable<IResponse<IProduct>> {
     return this._http.post<IResponse<IProduct>>(
       `${this.url}/products`,
