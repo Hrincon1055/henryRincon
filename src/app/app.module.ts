@@ -7,7 +7,7 @@ import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ProductGateway } from './domain/gateway/product.gateway';
-import { ProductService } from './infrastruture/produt/product.service';
+import { ProductService } from './infrastruture/product/product.service';
 import { LoaderInterceptor } from './interceptors/loader-interceptor.service';
 import { LayoutsModule } from './layouts/layouts.module';
 import { SharedModule } from './shared/shared.module';

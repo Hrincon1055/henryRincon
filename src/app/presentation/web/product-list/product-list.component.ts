@@ -15,10 +15,10 @@ export class ProductListComponent implements OnInit {
   public lengthFilt: number = 5;
   constructor(private _productUsecase: ProductUsecase) {}
   ngOnInit(): void {
-    this.getProdut();
+    this.getProduct();
   }
 
-  private getProdut(): void {
+  private getProduct(): void {
     this._productUsecase.getProducts().subscribe({
       next: (response) => {
         if (response) {

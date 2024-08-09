@@ -24,3 +24,21 @@ export const PRODUCT_SAVE: IResponse<IProduct> = {
     date_revision: '2025-01-01',
   },
 };
+export const PRODUCT_UPDATE: IResponse<IProduct> = {
+  message: 'Product updated successfully',
+  data: {
+    name: 'Nombre producto',
+    description: 'Descripción producto',
+    logo: 'assets-1.png',
+    date_release: '2025-01-01',
+    date_revision: '2025-01-01',
+  },
+};
+export const PRODUCT: IProduct = {
+  id: 'dos',
+  name: 'Nombre producto',
+  description: 'Descripción producto',
+  logo: 'assets-1.png',
+  date_release: '2025-01-01',
+  date_revision: '2025-01-01',
+};

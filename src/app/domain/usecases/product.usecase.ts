@@ -16,7 +16,14 @@ export class ProductUsecase implements ProductGateway {
     return this._productGateway.saveProduct(payload);
   }
 
-  public getProductsById(id: string): Observable<IResponse<IProduct>> {
+  public getProductsById(id: string): Observable<IProduct> {
     return this._productGateway.getProductsById(id);
+  }
+
+  public updateProduct(
+    payload: IProduct,
+    id: string
+  ): Observable<IResponse<IProduct>> {
+    return this._productGateway.updateProduct(payload, id);
   }
 }

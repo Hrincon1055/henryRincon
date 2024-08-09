@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { filter, map, Subscription, switchMap } from 'rxjs';
 import { IProduct } from '../../../domain/interfaces/product.interface';
 import { ProductUsecase } from '../../../domain/usecases/product.usecase';
 
@@ -12,10 +12,11 @@ import { ProductUsecase } from '../../../domain/usecases/product.usecase';
 })
 export class CreateProductComponent implements OnInit, OnDestroy {
   public statusAlert: 'error' | 'exito' | '' = '';
-  public formProdut!: FormGroup;
+  public formProduct!: FormGroup;
   public isActiveAlert: boolean = false;
   public messageAlert: string = '';
-
+  public isEditing: boolean = false;
+  public idEditing: string = '';
   private subscriptions: Subscription = new Subscription();
   constructor(
     public _fb: FormBuilder,
@@ -34,7 +35,7 @@ export class CreateProductComponent implements OnInit, OnDestroy {
   }
 
   private loadForm(): void {
-    this.formProdut = this._fb.group({
+    this.formProduct = this._fb.group({
       id: [{ value: crypto.randomUUID(), disabled: true }],
       name: [null, [Validators.required]],
       description: [null, [Validators.required]],
@@ -46,9 +47,9 @@ export class CreateProductComponent implements OnInit, OnDestroy {
 
   private syncDateReleaseWithDateRevision(): void {
     this.subscriptions.add(
-      this.formProdut.get('date_release')?.valueChanges.subscribe((date) => {
+      this.formProduct.get('date_release')?.valueChanges.subscribe((date) => {
         if (date) {
-          this.formProdut
+          this.formProduct
             .get('date_revision')
             ?.setValue(date, { emitEvent: false });
         }
@@ -57,12 +58,12 @@ export class CreateProductComponent implements OnInit, OnDestroy {
   }
 
   public isFieldValid(field: string): boolean {
-    const control = this.formProdut.get(field);
+    const control = this.formProduct.get(field);
     return !!(control && control.invalid && (control.touched || control.dirty));
   }
 
   public getErrorMessage(field: string): string {
-    const control = this.formProdut.get(field);
+    const control = this.formProduct.get(field);
     if (!control || !control.errors) return '';
     const errorMessages: { [key: string]: string } = {
       required: 'Este campo es requerido',
@@ -73,9 +74,12 @@ export class CreateProductComponent implements OnInit, OnDestroy {
     };
     return errorMessages[Object.keys(control.errors)[0]] || 'Error desconocido';
   }
-
-  public saveProdut(): void {
-    const newProduct = this.formProdut.getRawValue() as IProduct;
+  public saveProduct(): void {
+    console.log('create-product.component LINE 78 =>', this.isEditing);
+    this.isEditing ? this.updateProduct() : this.createProduct();
+  }
+  public createProduct(): void {
+    const newProduct = this.formProduct.getRawValue() as IProduct;
     this.subscriptions.add(
       this._productUsecase.saveProduct(newProduct).subscribe({
         next: (response) => {
@@ -84,9 +88,28 @@ export class CreateProductComponent implements OnInit, OnDestroy {
           }
         },
         error: (err) => {
-          this.resetStatus('Error al crear el produto', 'error');
+          this.resetStatus('Error al crear el producto', 'error');
         },
       })
+    );
+  }
+  public updateProduct(): void {
+    const updateProduct = this.formProduct.getRawValue() as IProduct;
+    delete updateProduct.id;
+    console.log('create-product.component LINE 98 =>', updateProduct);
+    this.subscriptions.add(
+      this._productUsecase
+        .updateProduct(updateProduct, this.idEditing)
+        .subscribe({
+          next: (response) => {
+            if (response) {
+              this.resetStatus('Producto Actualizado', 'exito');
+            }
+          },
+          error: (err) => {
+            this.resetStatus('Error al crear el producto', 'error');
+          },
+        })
     );
   }
 
@@ -97,16 +120,42 @@ export class CreateProductComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.isActiveAlert = false;
       this.resetForm();
-    }, 1000);
+    }, 2000);
   }
 
   private loadProductData(): void {
-    //  this.subscriptions.add(this._activatedRoute.paramMap
-    //     .pipe())
+    this.subscriptions.add(
+      this._activatedRoute.paramMap
+        .pipe(
+          map((param) => param.get('id')),
+          filter((id) => !!id),
+          switchMap((id) => this._productUsecase.getProductsById(id!))
+        )
+        .subscribe({
+          next: (response) => {
+            if (response) {
+              this.isEditing = true;
+              this.updateFormWithProductData(response);
+              this.idEditing = response?.id!;
+            }
+          },
+        })
+    );
+  }
+
+  private updateFormWithProductData(product: IProduct): void {
+    this.formProduct.patchValue({
+      id: product?.id,
+      name: product?.name,
+      description: product?.description,
+      logo: product?.logo,
+      date_release: product?.date_release,
+      date_revision: product?.date_revision,
+    });
   }
 
   public resetForm(): void {
-    this.formProdut.reset();
-    this.formProdut.get('id')?.setValue(crypto.randomUUID());
+    this.formProduct.reset();
+    this.formProduct.get('id')?.setValue(crypto.randomUUID());
   }
 }

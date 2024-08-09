@@ -3,12 +3,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
+import { IProduct } from '../../../domain/interfaces/product.interface';
+import { PRODUCT } from '../../../domain/mock/product.mock';
 import { ProductStub } from '../../../domain/stub/product.stub';
 import { ProductUsecase } from '../../../domain/usecases/product.usecase';
 import { SharedModule } from '../../../shared/shared.module';
 import { ProductListComponent } from './product-list.component';
 
-describe('ProdutListComponent', () => {
+describe('ProductListComponent', () => {
   let component: ProductListComponent;
   let fixture: ComponentFixture<ProductListComponent>;
 
@@ -26,5 +28,28 @@ describe('ProdutListComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+  it('should set productsFilterd to productsAll if searchTerm is empty', () => {
+    component.productsAll = [PRODUCT] as IProduct[];
+    component.searchTerm = '';
+    component.filterGrid();
+    expect(component.productsFilterd).toEqual(component.productsAll);
+  });
+  it('should filter products if searchTerm is not empty', () => {
+    component.productsAll = [PRODUCT] as IProduct[];
+    component.searchTerm = 'Product 1';
+    component.filterGrid();
+    expect(component.productsFilterd.length).toBe(0);
+  });
+  it('should filter products based on name', () => {
+    component.productsAll = [PRODUCT] as IProduct[];
+    const result = component.updateFiter({ name: 'Test' });
+    expect(result.length).toBe(0);
+  });
+  it('should filter products by name', () => {
+    const products: IProduct[] = [PRODUCT];
+    const filters = { name: 'Banana' };
+    const filteredProducts = component['nameFltr'](products, filters);
+    expect(filteredProducts.length).toBe(0);
   });
 });

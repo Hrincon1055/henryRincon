@@ -27,7 +27,17 @@ export class ProductService extends ProductGateway {
     );
   }
 
-  public getProductsById(id: string): Observable<IResponse<IProduct>> {
-    return this._http.get<IResponse<IProduct>>(`${this.url}/products/${id}`);
+  public getProductsById(id: string): Observable<IProduct> {
+    return this._http.get<IProduct>(`${this.url}/products/${id}`);
+  }
+
+  public updateProduct(
+    payload: IProduct,
+    id: string
+  ): Observable<IResponse<IProduct>> {
+    return this._http.put<IResponse<IProduct>>(
+      `${this.url}/products/${id}`,
+      payload
+    );
   }
 }

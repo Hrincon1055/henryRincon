@@ -7,29 +7,29 @@ import { ProductUsecase } from '../../../domain/usecases/product.usecase';
 import { SharedModule } from '../../../shared/shared.module';
 import { CreateProductComponent } from './create-product.component';
 
-describe('CreateProdutComponent', () => {
+describe('CreateProductComponent', () => {
   let component: CreateProductComponent;
   let fixture: ComponentFixture<CreateProductComponent>;
   let formBuilder: FormBuilder;
-  let produtUsecase: jasmine.SpyObj<ProductUsecase>;
+  let productUsecase: jasmine.SpyObj<ProductUsecase>;
   const voidExpected = void 0;
   beforeEach(async () => {
-    const produtUsecaseSpy = jasmine.createSpyObj('ProdutUsecase', [
-      'saveProdut',
+    const productUsecaseSpy = jasmine.createSpyObj('ProductUsecase', [
+      'saveProduct',
     ]);
     await TestBed.configureTestingModule({
       declarations: [CreateProductComponent],
       imports: [SharedModule, RouterTestingModule, ReactiveFormsModule],
       providers: [
         FormBuilder,
-        { provide: ProductUsecase, useValue: produtUsecaseSpy },
+        { provide: ProductUsecase, useValue: productUsecaseSpy },
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
     }).compileComponents();
     fixture = TestBed.createComponent(CreateProductComponent);
     component = fixture.componentInstance;
     formBuilder = TestBed.inject(FormBuilder);
-    produtUsecase = TestBed.inject(
+    productUsecase = TestBed.inject(
       ProductUsecase
     ) as jasmine.SpyObj<ProductUsecase>;
     fixture.detectChanges();
@@ -40,7 +40,7 @@ describe('CreateProdutComponent', () => {
   });
   describe('getErrorMessage', () => {
     beforeEach(() => {
-      component.formProdut = formBuilder.group({
+      component.formProduct = formBuilder.group({
         id: [{ value: '', disabled: true }],
         name: [null, [Validators.required]],
         description: [null, [Validators.required]],
@@ -56,38 +56,38 @@ describe('CreateProdutComponent', () => {
     });
 
     it('should return "Este campo es requerido" if the field is required and empty', () => {
-      component.formProdut.get('name')?.setValue('');
-      component.formProdut.get('name')?.markAsTouched();
+      component.formProduct.get('name')?.setValue('');
+      component.formProduct.get('name')?.markAsTouched();
       const result = component.getErrorMessage('name');
       expect(result).toBe('Este campo es requerido');
     });
 
     it('should return error message for pattern if the field has a pattern error', () => {
-      component.formProdut
+      component.formProduct
         .get('name')
         ?.setValidators([Validators.pattern('^[a-zA-Z]*$')]);
-      component.formProdut.get('name')?.setValue('1234');
-      component.formProdut.get('name')?.markAsTouched();
+      component.formProduct.get('name')?.setValue('1234');
+      component.formProduct.get('name')?.markAsTouched();
       const result = component.getErrorMessage('name');
       expect(result).toBe('Formato no válido');
     });
 
     it('should return error message for minlength if the field is too short', () => {
-      component.formProdut
+      component.formProduct
         .get('name')
         ?.setValidators([Validators.minLength(5)]);
-      component.formProdut.get('name')?.setValue('John');
-      component.formProdut.get('name')?.markAsTouched();
+      component.formProduct.get('name')?.setValue('John');
+      component.formProduct.get('name')?.markAsTouched();
       const result = component.getErrorMessage('name');
       expect(result).toBe('Debe tener al menos 5 caracteres');
     });
 
     it('should return error message for maxlength if the field is too long', () => {
-      component.formProdut
+      component.formProduct
         .get('name')
         ?.setValidators([Validators.maxLength(5)]);
-      component.formProdut.get('name')?.setValue('Johnathan');
-      component.formProdut.get('name')?.markAsTouched();
+      component.formProduct.get('name')?.setValue('Johnathan');
+      component.formProduct.get('name')?.markAsTouched();
       const result = component.getErrorMessage('name');
       expect(result).toBe('No puede tener más de 5 caracteres');
     });

@@ -7,7 +7,7 @@ import { environment } from '../../../environments/environment';
 import { IProduct } from '../../domain/interfaces/product.interface';
 import { PRODUCT_SAVE, PRODUCTS } from '../../domain/mock/product.mock';
 import { ProductService } from './product.service';
-describe('ProdutService', () => {
+describe('ProductService', () => {
   let service: ProductService;
   let httpMock: HttpTestingController;
 
@@ -28,7 +28,7 @@ describe('ProdutService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should get produt', () => {
+  it('should get product', () => {
     service.getProducts().subscribe((response) => {
       expect(response.data).toEqual(PRODUCTS.data);
     });
@@ -36,7 +36,7 @@ describe('ProdutService', () => {
     expect(req.request.method).toBe('GET');
     req.flush({ data: PRODUCTS.data });
   });
-  it('should save produt', () => {
+  it('should save product', () => {
     const payload: IProduct = {
       id: 'dos',
       name: 'Nuevo producto',
