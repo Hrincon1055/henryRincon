@@ -1,4 +1,4 @@
-import { IProduct } from '../interfaces/produt.interface';
+import { IProduct } from '../interfaces/product.interface';
 import { IResponse } from '../interfaces/response.interface';
 
 export const PRODUCTS: IResponse<IProduct[]> = {

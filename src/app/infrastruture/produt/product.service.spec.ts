@@ -4,19 +4,19 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { environment } from '../../../environments/environment';
-import { IProduct } from '../../domain/interfaces/produt.interface';
+import { IProduct } from '../../domain/interfaces/product.interface';
 import { PRODUCT_SAVE, PRODUCTS } from '../../domain/mock/product.mock';
-import { ProdutService } from './product.service';
+import { ProductService } from './product.service';
 describe('ProdutService', () => {
-  let service: ProdutService;
+  let service: ProductService;
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [ProdutService],
+      providers: [ProductService],
     });
-    service = TestBed.inject(ProdutService);
+    service = TestBed.inject(ProductService);
     httpMock = TestBed.inject(HttpTestingController);
   });
 
@@ -29,8 +29,7 @@ describe('ProdutService', () => {
   });
 
   it('should get produt', () => {
-    service.getProduts().subscribe((response) => {
-      console.log('product.service.spec LINE 32 =>', response);
+    service.getProducts().subscribe((response) => {
       expect(response.data).toEqual(PRODUCTS.data);
     });
     const req = httpMock.expectOne(`${environment.urls.url}/products`);
@@ -46,15 +45,12 @@ describe('ProdutService', () => {
       date_release: '2025-01-01',
       date_revision: '2025-01-01',
     };
-
-    service.saveProdut(payload).subscribe((response) => {
+    service.saveProduct(payload).subscribe((response) => {
       expect(response).toEqual(PRODUCT_SAVE);
     });
-
     const req = httpMock.expectOne(`${environment.urls.url}/products`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(payload);
-
     req.flush(PRODUCT_SAVE);
   });
 });

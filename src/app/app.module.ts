@@ -6,8 +6,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ProdutGateway } from './domain/gateway/produt.gateway';
-import { ProdutService } from './infrastruture/produt/product.service';
+import { ProductGateway } from './domain/gateway/product.gateway';
+import { ProductService } from './infrastruture/produt/product.service';
 import { LoaderInterceptor } from './interceptors/loader-interceptor.service';
 import { LayoutsModule } from './layouts/layouts.module';
 import { SharedModule } from './shared/shared.module';
@@ -30,7 +30,7 @@ registerLocaleData(localeEs, 'es');
       multi: true,
     },
     { provide: LOCALE_ID, useValue: 'es' },
-    { provide: ProdutGateway, useClass: ProdutService },
+    { provide: ProductGateway, useClass: ProductService },
   ],
   bootstrap: [AppComponent],
 })

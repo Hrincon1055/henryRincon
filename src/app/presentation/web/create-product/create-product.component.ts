@@ -1,26 +1,32 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { IProduct } from '../../../domain/interfaces/produt.interface';
-import { ProdutUsecase } from '../../../domain/usecases/produt.usecase';
+import { IProduct } from '../../../domain/interfaces/product.interface';
+import { ProductUsecase } from '../../../domain/usecases/product.usecase';
 
 @Component({
-  selector: 'app-create-produt',
-  templateUrl: './create-produt.component.html',
-  styleUrls: ['./create-produt.component.css'],
+  selector: 'app-create-product',
+  templateUrl: './create-product.component.html',
+  styleUrls: ['./create-product.component.css'],
 })
-export class CreateProdutComponent implements OnInit, OnDestroy {
+export class CreateProductComponent implements OnInit, OnDestroy {
+  public statusAlert: 'error' | 'exito' | '' = '';
   public formProdut!: FormGroup;
-  public isProductSave: boolean = false;
+  public isActiveAlert: boolean = false;
+  public messageAlert: string = '';
+
   private subscriptions: Subscription = new Subscription();
   constructor(
-    private _fb: FormBuilder,
-    private _produtUsecase: ProdutUsecase
+    public _fb: FormBuilder,
+    private _productUsecase: ProductUsecase,
+    private _activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     this.loadForm();
     this.syncDateReleaseWithDateRevision();
+    this.loadProductData();
   }
 
   ngOnDestroy(): void {
@@ -71,21 +77,32 @@ export class CreateProdutComponent implements OnInit, OnDestroy {
   public saveProdut(): void {
     const newProduct = this.formProdut.getRawValue() as IProduct;
     this.subscriptions.add(
-      this._produtUsecase.saveProdut(newProduct).subscribe({
+      this._productUsecase.saveProduct(newProduct).subscribe({
         next: (response) => {
           if (response) {
-            this.isProductSave = true;
-            setTimeout(() => {
-              this.isProductSave = false;
-              this.resetForm();
-            }, 1000);
+            this.resetStatus('Producto creado', 'exito');
           }
         },
         error: (err) => {
-          this.isProductSave = false;
+          this.resetStatus('Error al crear el produto', 'error');
         },
       })
     );
+  }
+
+  public resetStatus(message: string, status: 'error' | 'exito'): void {
+    this.isActiveAlert = true;
+    this.messageAlert = message;
+    this.statusAlert = status;
+    setTimeout(() => {
+      this.isActiveAlert = false;
+      this.resetForm();
+    }, 1000);
+  }
+
+  private loadProductData(): void {
+    //  this.subscriptions.add(this._activatedRoute.paramMap
+    //     .pipe())
   }
 
   public resetForm(): void {

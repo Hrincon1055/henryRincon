@@ -1,0 +1,11 @@
+<div
+  class="alert alert-error"
+  [ngClass]="{
+    'alert-error': statusAlert === 'error',
+    'alert-success': statusAlert === 'exito'
+  }"
+  role="alert"
+  *ngIf="isActiveAlert"
+>
+  <strong>{{ messageAlert }}</strong>
+</div>

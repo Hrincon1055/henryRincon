@@ -1,6 +1,8 @@
-<div class="alert alert-success" role="alert" *ngIf="isProductSave">
-  <strong>¡Éxito!</strong> Producto creado.
-</div>
+<app-alert
+  [isActiveAlert]="isActiveAlert"
+  [messageAlert]="messageAlert"
+  [statusAlert]="statusAlert"
+></app-alert>
 <div class="container">
   <div class="card-form">
     <div class="card-header">
@@ -103,6 +105,3 @@
     </form>
   </div>
 </div>
-<pre>
-  {{ formProdut.value | json }}
-</pre>

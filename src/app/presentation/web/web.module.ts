@@ -1,19 +1,21 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AvatarComponent } from './component/avatar/avatar.component';
 import { ErrorInputMessageComponent } from './component/error-input-message/error-input-message.component';
-import { CreateProdutComponent } from './create-produt/create-produt.component';
-import { ProdutListComponent } from './produt-list/produt-list.component';
+import { CreateProductComponent } from './create-product/create-product.component';
+import { ProductListComponent } from './product-list/product-list.component';
 import { WebRoutingModule } from './web-routing.module';
+import { AlertComponent } from './component/alert/alert.component';
 
 @NgModule({
   declarations: [
-    ProdutListComponent,
+    ProductListComponent,
     AvatarComponent,
     ErrorInputMessageComponent,
-    CreateProdutComponent,
+    CreateProductComponent,
+    AlertComponent,
   ],
-  imports: [CommonModule, WebRoutingModule, ReactiveFormsModule],
+  imports: [CommonModule, WebRoutingModule, ReactiveFormsModule, FormsModule],
 })
 export class WebModule {}

@@ -1,0 +1,44 @@
+<div style="display: flex; flex-direction: column">
+  <div class="search-container">
+    <input
+      type="text"
+      placeholder="Search..."
+      style="max-width: 300px"
+      [(ngModel)]="searchTerm"
+      (ngModelChange)="filterGrid()"
+    />
+    <button class="btn-primary" [routerLink]="['/product/create']">
+      <small>Agregar</small>
+    </button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Logo</th>
+        <th>Nombre del producto</th>
+        <th>Descripción</th>
+        <th>Fecha de liberación</th>
+        <th>Fecha de reestructuración</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let product of productsFilterd.slice(0, +lengthFilt)">
+        <td><app-avatar [name]="product.name"></app-avatar></td>
+        <td>{{ product.name }}</td>
+        <td>{{ product.description }}</td>
+        <td>{{ product.date_release | date : "dd/MM/yyyy" }}</td>
+        <td>{{ product.date_revision | date : "dd/MM/yyyy" }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="pagination">
+    <span>{{ lengthFilt }} Resultados</span>
+    <select [(ngModel)]="lengthFilt">
+      <option [ngValue]="5">5</option>
+      <option [ngValue]="10">10</option>
+      <option [ngValue]="20">20</option>
+    </select>
+  </div>
+</div>

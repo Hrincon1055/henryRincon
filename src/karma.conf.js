@@ -28,10 +28,10 @@ module.exports = function (config) {
       fixWebpackSourcePaths: true,
       check: {
         global: {
-          excludes: ["src/app/domain/**/*.ts"],
+          excludes: ["src/app/domain/**/*.ts", "src/utils/**/*.ts"],
         },
       },
-      exclude: ["src/app/domain/**/*.ts"],
+      exclude: ["src/app/domain/**/*.ts", "src/utils/**/*.ts"],
     },
     reporters: ["progress", "kjhtml"],
     port: 9876,
