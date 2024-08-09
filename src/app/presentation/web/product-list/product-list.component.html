@@ -20,6 +20,7 @@
         <th>Descripción</th>
         <th>Fecha de liberación</th>
         <th>Fecha de reestructuración</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -29,6 +30,12 @@
         <td>{{ product.description }}</td>
         <td>{{ product.date_release | date : "dd/MM/yyyy" }}</td>
         <td>{{ product.date_revision | date : "dd/MM/yyyy" }}</td>
+        <td>
+          <app-product-menu
+            [productId]="product?.id!"
+            (deleteProductId)="deleteProductId($event)"
+          ></app-product-menu>
+        </td>
       </tr>
     </tbody>
   </table>
@@ -42,3 +49,9 @@
     </select>
   </div>
 </div>
+<app-confir-modal
+  *ngIf="isModalOpen"
+  [productTitle]="titleProduct"
+  (onClose)="handleModalClose($event)"
+>
+</app-confir-modal>

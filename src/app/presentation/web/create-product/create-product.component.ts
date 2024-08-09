@@ -74,10 +74,11 @@ export class CreateProductComponent implements OnInit, OnDestroy {
     };
     return errorMessages[Object.keys(control.errors)[0]] || 'Error desconocido';
   }
+
   public saveProduct(): void {
-    console.log('create-product.component LINE 78 =>', this.isEditing);
     this.isEditing ? this.updateProduct() : this.createProduct();
   }
+
   public createProduct(): void {
     const newProduct = this.formProduct.getRawValue() as IProduct;
     this.subscriptions.add(
@@ -93,10 +94,10 @@ export class CreateProductComponent implements OnInit, OnDestroy {
       })
     );
   }
+
   public updateProduct(): void {
     const updateProduct = this.formProduct.getRawValue() as IProduct;
     delete updateProduct.id;
-    console.log('create-product.component LINE 98 =>', updateProduct);
     this.subscriptions.add(
       this._productUsecase
         .updateProduct(updateProduct, this.idEditing)
@@ -123,7 +124,7 @@ export class CreateProductComponent implements OnInit, OnDestroy {
     }, 2000);
   }
 
-  private loadProductData(): void {
+  public loadProductData(): void {
     this.subscriptions.add(
       this._activatedRoute.paramMap
         .pipe(
@@ -134,16 +135,16 @@ export class CreateProductComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (response) => {
             if (response) {
-              this.isEditing = true;
               this.updateFormWithProductData(response);
-              this.idEditing = response?.id!;
             }
           },
         })
     );
   }
 
-  private updateFormWithProductData(product: IProduct): void {
+  public updateFormWithProductData(product: IProduct): void {
+    this.isEditing = true;
+    this.idEditing = product?.id!;
     this.formProduct.patchValue({
       id: product?.id,
       name: product?.name,

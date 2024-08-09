@@ -1,8 +1,16 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick,
+} from '@angular/core/testing';
 
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
+import { of } from 'rxjs';
+import { PRODUCT } from '../../../domain/mock/product.mock';
+import { ProductStub } from '../../../domain/stub/product.stub';
 import { ProductUsecase } from '../../../domain/usecases/product.usecase';
 import { SharedModule } from '../../../shared/shared.module';
 import { CreateProductComponent } from './create-product.component';
@@ -11,27 +19,21 @@ describe('CreateProductComponent', () => {
   let component: CreateProductComponent;
   let fixture: ComponentFixture<CreateProductComponent>;
   let formBuilder: FormBuilder;
-  let productUsecase: jasmine.SpyObj<ProductUsecase>;
   const voidExpected = void 0;
   beforeEach(async () => {
-    const productUsecaseSpy = jasmine.createSpyObj('ProductUsecase', [
-      'saveProduct',
-    ]);
     await TestBed.configureTestingModule({
       declarations: [CreateProductComponent],
       imports: [SharedModule, RouterTestingModule, ReactiveFormsModule],
       providers: [
         FormBuilder,
-        { provide: ProductUsecase, useValue: productUsecaseSpy },
+        { provide: ProductUsecase, useClass: ProductStub },
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
     }).compileComponents();
     fixture = TestBed.createComponent(CreateProductComponent);
     component = fixture.componentInstance;
     formBuilder = TestBed.inject(FormBuilder);
-    productUsecase = TestBed.inject(
-      ProductUsecase
-    ) as jasmine.SpyObj<ProductUsecase>;
+
     fixture.detectChanges();
   });
 
@@ -49,19 +51,16 @@ describe('CreateProductComponent', () => {
         date_revision: [{ value: null, disabled: true }],
       });
     });
-
     it('should return an empty string if there are no errors', () => {
       const result = component.getErrorMessage('id');
       expect(result).toBe('');
     });
-
     it('should return "Este campo es requerido" if the field is required and empty', () => {
       component.formProduct.get('name')?.setValue('');
       component.formProduct.get('name')?.markAsTouched();
       const result = component.getErrorMessage('name');
       expect(result).toBe('Este campo es requerido');
     });
-
     it('should return error message for pattern if the field has a pattern error', () => {
       component.formProduct
         .get('name')
@@ -71,7 +70,6 @@ describe('CreateProductComponent', () => {
       const result = component.getErrorMessage('name');
       expect(result).toBe('Formato no válido');
     });
-
     it('should return error message for minlength if the field is too short', () => {
       component.formProduct
         .get('name')
@@ -81,7 +79,6 @@ describe('CreateProductComponent', () => {
       const result = component.getErrorMessage('name');
       expect(result).toBe('Debe tener al menos 5 caracteres');
     });
-
     it('should return error message for maxlength if the field is too long', () => {
       component.formProduct
         .get('name')
@@ -92,37 +89,56 @@ describe('CreateProductComponent', () => {
       expect(result).toBe('No puede tener más de 5 caracteres');
     });
   });
-  // it('should set isProductSave to true when saveProdut is successful', () => {
-  //   const product = component.formProdut.getRawValue();
-  //   produtUsecase.saveProduct.and.returnValue(
-  //     of({
-  //       message: 'Product added successfully',
-  //       data: {
-  //         id: 'tres',
-  //         name: 'Nombre producto',
-  //         description: 'Descripción producto',
-  //         logo: 'assets-1.png',
-  //         date_release: '2025-01-01',
-  //         date_revision: '2025-01-01',
-  //       },
-  //     })
-  //   );
-  //   component.saveProdut();
-  //   expect(produtUsecase.saveProduct).toHaveBeenCalledWith(product);
-  //   expect(component.statusAlert).toBeTrue();
-  // });
   it('should call resetForm', () => {
     expect(component.resetForm()).toBe(voidExpected);
   });
-  // it('should call resetStatus', () => {
-  //   expect(component.resetStatus()).toBe(voidExpected);
-  // });
-  // it('should set isProductSave to true, then false, and call resetForm after 1 second', fakeAsync(() => {
-  //   spyOn(component, 'resetForm');
-  //   component.resetStatus();
-  //   expect(component.statusAlert).toBeTrue();
-  //   tick(1000);
-  //   expect(component.statusAlert).toBeFalse();
-  //   expect(component.resetForm).toHaveBeenCalled();
-  // }));
+  it('should call updateProduct if isEditing is true', () => {
+    spyOn(component, 'updateProduct');
+    component.isEditing = true;
+    component.saveProduct();
+    expect(component.updateProduct).toHaveBeenCalled();
+  });
+  it('should call createProduct if isEditing is false', () => {
+    spyOn(component, 'createProduct');
+    component.isEditing = false;
+    component.saveProduct();
+    expect(component.createProduct).toHaveBeenCalled();
+  });
+  beforeEach(() => {
+    spyOn(component['_productUsecase'], 'saveProduct').and.returnValue(
+      of({ data: {} })
+    );
+    spyOn(component, 'resetStatus');
+  });
+  it('should call saveProduct and resetStatus with success message', () => {
+    component.createProduct();
+    expect(component['_productUsecase'].saveProduct).toHaveBeenCalled();
+    expect(component.resetStatus).toHaveBeenCalledWith(
+      'Producto creado',
+      'exito'
+    );
+  });
+  it('should call updateProduct and resetStatus with success message', () => {
+    component.idEditing = '93c70fa6-bae1-411f-9574-9ed282f3ee6b';
+    component.updateProduct();
+    expect(component.updateProduct()).toBe(voidExpected);
+  });
+  it('should update alert status and call resetForm after 2 seconds', () => {
+    expect(component.resetStatus('mensaje', 'exito')).toBe(voidExpected);
+  });
+  it('should call updateFormWithProductData', () => {
+    expect(component.updateFormWithProductData(PRODUCT)).toBe(voidExpected);
+  });
+  it('should call loadProductData', () => {
+    expect(component.loadProductData()).toBe(voidExpected);
+  });
+  it('should update alert status and call resetForm after 2 seconds', fakeAsync(() => {
+    spyOn(component, 'resetForm').and.callThrough();
+    component.resetStatus('', 'error');
+    expect(component.isActiveAlert).toBeFalsy();
+    expect(component.messageAlert).toBe('');
+    expect(component.statusAlert).toBe('');
+    tick(2000);
+    expect(component.isActiveAlert).toBeFalse();
+  }));
 });

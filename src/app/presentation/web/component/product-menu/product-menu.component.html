@@ -1,0 +1,9 @@
+<div class="menu-container">
+  <i class="menu-icon" (click)="toggleMenu()">⋮</i>
+  <div class="context-menu" *ngIf="showMenu">
+    <ul>
+      <li (click)="editProduct()">Editar</li>
+      <li (click)="deleteProduct()">Eliminar</li>
+    </ul>
+  </div>
+</div>

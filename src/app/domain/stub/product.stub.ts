@@ -4,6 +4,7 @@ import { ProductGateway } from '../gateway/product.gateway';
 import { IProduct } from '../interfaces/product.interface';
 import { IResponse } from '../interfaces/response.interface';
 import {
+  DELETE_PRODUCT,
   PRODUCT,
   PRODUCT_SAVE,
   PRODUCT_UPDATE,
@@ -16,6 +17,7 @@ export class ProductStub implements ProductGateway {
   private productSave: IResponse<IProduct> = PRODUCT_SAVE;
   private productUpdate: IResponse<IProduct> = PRODUCT_UPDATE;
   private product: IProduct = PRODUCT;
+  private productDelete: { message: string } = DELETE_PRODUCT;
 
   public getProducts(): Observable<IResponse<IProduct[]>> {
     return of(this.products);
@@ -31,5 +33,8 @@ export class ProductStub implements ProductGateway {
     id: string
   ): Observable<IResponse<IProduct>> {
     return of(this.productUpdate);
+  }
+  public deleteProductsById(id: string): Observable<{ message: string }> {
+    return of(this.productDelete);
   }
 }

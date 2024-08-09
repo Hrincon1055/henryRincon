@@ -13,7 +13,7 @@ import { ProductListComponent } from './product-list.component';
 describe('ProductListComponent', () => {
   let component: ProductListComponent;
   let fixture: ComponentFixture<ProductListComponent>;
-
+  const voidExpected = void 0;
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ProductListComponent],
@@ -51,5 +51,22 @@ describe('ProductListComponent', () => {
     const filters = { name: 'Banana' };
     const filteredProducts = component['nameFltr'](products, filters);
     expect(filteredProducts.length).toBe(0);
+  });
+  it('should set isModalOpen to true, idDelete, and titleProduct when deleteProductId is called with a valid event', () => {
+    const event = 'dos';
+    component.productsAll = [PRODUCT] as IProduct[];
+    component.deleteProductId(event);
+    expect(component.isModalOpen).toBeTrue();
+    expect(component.idDelete).toBe(event);
+    expect(component.titleProduct).toBe(PRODUCT?.name!);
+  });
+  it('should set isModalOpen to false and call deleteProductsById when event is true', () => {
+    spyOn(component, 'deleteProductsById');
+    component.handleModalClose(true);
+    expect(component.isModalOpen).toBeFalse();
+    expect(component.deleteProductsById).toHaveBeenCalled();
+  });
+  it('should call deleteProductsById', () => {
+    expect(component.deleteProductsById()).toBe(voidExpected);
   });
 });

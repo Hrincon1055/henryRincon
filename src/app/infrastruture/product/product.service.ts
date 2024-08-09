@@ -40,4 +40,8 @@ export class ProductService extends ProductGateway {
       payload
     );
   }
+
+  public deleteProductsById(id: string): Observable<{ message: string }> {
+    return this._http.delete<{ message: string }>(`${this.url}/products/${id}`);
+  }
 }

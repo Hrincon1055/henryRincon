@@ -10,4 +10,5 @@ export abstract class ProductGateway {
     payload: IProduct,
     id: string
   ): Observable<IResponse<IProduct>>;
+  abstract deleteProductsById(id: string): Observable<{ message: string }>;
 }

@@ -42,3 +42,6 @@ export const PRODUCT: IProduct = {
   date_release: '2025-01-01',
   date_revision: '2025-01-01',
 };
+export const DELETE_PRODUCT: { message: string } = {
+  message: 'Product removed successfully',
+};

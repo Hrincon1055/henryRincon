@@ -26,4 +26,8 @@ export class ProductUsecase implements ProductGateway {
   ): Observable<IResponse<IProduct>> {
     return this._productGateway.updateProduct(payload, id);
   }
+
+  public deleteProductsById(id: string): Observable<{ message: string }> {
+    return this._productGateway.deleteProductsById(id);
+  }
 }
