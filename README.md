@@ -1,5 +1,9 @@
 # HenryRincon
 
+## install dependencies
+
+Run `npm i`
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.10.
 
 ## Development server
@@ -17,6 +21,10 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 ## Running unit tests
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+
+## Running unit tests whit caverage
+
+Run `ng test --watch --code-coverage` to execute the unit tests via [Karma] and coverage
 
 ## Running end-to-end tests
 
